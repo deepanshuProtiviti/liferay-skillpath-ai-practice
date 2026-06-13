@@ -1,0 +1,9 @@
+// Check GETTING_STARTED.md for information regarding usage.
+
+allprojects {
+	plugins.withId("com.liferay.node") {
+		node {
+			nodeVersion = "20.19.0"
+		}
+	}
+}

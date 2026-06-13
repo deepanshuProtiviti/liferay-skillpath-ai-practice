@@ -1,0 +1,16 @@
+assemble:
+    - from: dist
+      into: static
+
+my-react-app:
+    type: customElement
+    cssURLs:
+        - assets/index.css
+    htmlElementName: my-react-app
+    friendlyURLMapping: my-react-app
+    instanceable: false
+    name: My React App
+    portletCategoryName: category.client-extensions
+    urls:
+        - assets/index.js
+    useESM: true
