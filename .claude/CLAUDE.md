@@ -67,7 +67,7 @@ feature.flag.LPD-63311=true
 
 | Setting | Value |
 |---------|-------|
-| URL | `http://localhost:8080/o/mcp/sse` |
+| URL | `http://localhost:8080/o/mcp` |
 | Transport | HTTP Server Sent Events (SSE) |
 | Authorization Header | `Basic dGVzdEBsaWZlcmF5LmNvbTp0ZXN0` |
 

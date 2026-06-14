@@ -1,0 +1,316 @@
+
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  .shell{background:var(--color-background-secondary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;font-size:13px}
+  .topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-size:14px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;gap:6px}
+  .logo-dot{width:8px;height:8px;border-radius:50%;background:#1D9E75}
+  .topbar-right{display:flex;align-items:center;gap:12px}
+  .avatar{width:28px;height:28px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#085041}
+  .layout{display:flex;min-height:520px}
+  .sidebar{width:168px;background:var(--color-background-primary);border-right:0.5px solid var(--color-border-tertiary);padding:12px 8px;flex-shrink:0;display:flex;flex-direction:column;gap:2px}
+  .nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--border-radius-md);cursor:pointer;color:var(--color-text-secondary);font-size:12px;transition:background .15s}
+  .nav-item:hover{background:var(--color-background-secondary)}
+  .nav-item.active{background:var(--color-background-secondary);color:var(--color-text-primary);font-weight:500}
+  .nav-item i{font-size:15px;flex-shrink:0}
+  .nav-section{font-size:10px;color:var(--color-text-tertiary);padding:10px 10px 4px;text-transform:uppercase;letter-spacing:.05em}
+  .content{flex:1;padding:16px;overflow:hidden;background:var(--color-background-secondary)}
+  .screen{display:none}
+  .screen.active{display:block}
+  .page-title{font-size:15px;font-weight:500;color:var(--color-text-primary);margin-bottom:4px}
+  .page-sub{font-size:12px;color:var(--color-text-secondary);margin-bottom:14px}
+  .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+  .stat-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px}
+  .stat-val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+  .stat-lbl{font-size:11px;color:var(--color-text-tertiary);margin-top:1px}
+  .stat-change{font-size:11px;color:var(--color-text-success);margin-top:2px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 14px}
+  .card-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+  .progress-row{margin-bottom:7px}
+  .progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-secondary);margin-bottom:3px}
+  .progress-bar{height:5px;background:var(--color-border-tertiary);border-radius:3px;overflow:hidden}
+  .progress-fill{height:100%;border-radius:3px}
+  .badge-sm{font-size:10px;padding:2px 7px;border-radius:var(--border-radius-md);display:inline-block}
+  .b-teal{background:#E1F5EE;color:#085041}
+  .b-purple{background:#EEEDFE;color:#3C3489}
+  .b-amber{background:#FAEEDA;color:#633806}
+  .b-coral{background:#FAECE7;color:#712B13}
+  .b-blue{background:#E6F1FB;color:#0C447C}
+  .b-green{background:#EAF3DE;color:#27500A}
+  @media(prefers-color-scheme:dark){
+    .b-teal{background:#04342C;color:#9FE1CB}
+    .b-purple{background:#26215C;color:#CECBF6}
+    .b-amber{background:#412402;color:#FAC775}
+    .b-coral{background:#4A1B0C;color:#F5C4B3}
+    .b-blue{background:#042C53;color:#B5D4F4}
+    .b-green{background:#173404;color:#C0DD97}
+  }
+  .activity-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+  .activity-item:last-child{border-bottom:none}
+  .activity-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px}
+  .activity-text{font-size:12px;color:var(--color-text-secondary);line-height:1.4}
+  .activity-time{font-size:11px;color:var(--color-text-tertiary);margin-top:1px}
+  .ai-banner{background:#E1F5EE;border:0.5px solid #9FE1CB;border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+  @media(prefers-color-scheme:dark){.ai-banner{background:#04342C;border-color:#085041}}
+  .ai-banner-text{font-size:12px;color:#085041;font-weight:500}
+  @media(prefers-color-scheme:dark){.ai-banner-text{color:#9FE1CB}}
+  .ai-banner-sub{font-size:11px;color:#0F6E56;margin-top:1px}
+  @media(prefers-color-scheme:dark){.ai-banner-sub{color:#5DCAA5}}
+  .btn-sm{font-size:11px;padding:5px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);cursor:pointer}
+  .btn-sm:hover{background:var(--color-background-secondary)}
+  .btn-primary{background:#1D9E75;border:none;color:#fff;font-size:12px;padding:7px 14px;border-radius:var(--border-radius-md);cursor:pointer}
+  .btn-primary:hover{background:#0F6E56}
+  .roadmap-step{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}
+  .step-circle{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+  .step-done{background:#E1F5EE;color:#085041}
+  .step-active{background:#1D9E75;color:#fff}
+  .step-todo{background:var(--color-background-secondary);color:var(--color-text-tertiary);border:0.5px solid var(--color-border-tertiary)}
+  @media(prefers-color-scheme:dark){.step-done{background:#04342C;color:#9FE1CB}}
+  .step-line{width:1px;background:var(--color-border-tertiary);margin:2px 0;height:20px;margin-left:11px}
+  .step-content{flex:1;padding-top:2px}
+  .step-title{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+  .step-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+  .course-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
+  .course-left{display:flex;align-items:center;gap:10px}
+  .course-icon{width:32px;height:32px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .chat-messages{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+  .msg{max-width:85%;padding:8px 10px;border-radius:var(--border-radius-md);font-size:12px;line-height:1.5}
+  .msg-ai{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);align-self:flex-start}
+  .msg-user{background:#E1F5EE;color:#085041;align-self:flex-end}
+  @media(prefers-color-scheme:dark){.msg-user{background:#04342C;color:#9FE1CB}}
+  .msg-label{font-size:10px;color:var(--color-text-tertiary);margin-bottom:2px}
+  .chat-input-row{display:flex;gap:6px;align-items:center}
+  .chat-input-row input{flex:1;font-size:12px;padding:7px 10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary)}
+  .job-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:7px}
+  .job-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+  .job-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+  .job-company{font-size:11px;color:var(--color-text-secondary);margin-bottom:5px}
+  .match-bar{height:4px;background:var(--color-border-tertiary);border-radius:2px;margin-top:5px;overflow:hidden}
+  .match-fill{height:100%;background:#1D9E75;border-radius:2px}
+  .skill-tag{font-size:10px;background:var(--color-background-secondary);color:var(--color-text-secondary);border-radius:4px;padding:2px 6px;display:inline-block;margin:2px 2px 0 0;border:0.5px solid var(--color-border-tertiary)}
+  .resume-zone{border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:20px;text-align:center;margin-bottom:12px}
+  .gap-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+  .gap-row:last-child{border-bottom:none}
+  .gap-skill{font-size:12px;color:var(--color-text-primary)}
+  .gap-level{display:flex;gap:3px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--color-border-tertiary)}
+  .dot.filled{background:#1D9E75}
+  .dot.partial{background:#EF9F27}
+  .interview-q{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;margin-bottom:8px}
+  .q-num{font-size:10px;color:var(--color-text-tertiary);margin-bottom:4px}
+  .q-text{font-size:13px;color:var(--color-text-primary);font-weight:500;margin-bottom:8px;line-height:1.5}
+  .q-tags{display:flex;gap:4px;flex-wrap:wrap}
+  textarea{width:100%;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:8px 10px;font-size:12px;resize:none;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+  .cert-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:7px;display:flex;align-items:center;gap:10px}
+  .cert-icon{width:36px;height:36px;border-radius:var(--border-radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+</style>
+
+<h2 class="sr-only">SkillPath AI portal wireframe — interactive screen-by-screen mockup</h2>
+
+<div class="shell">
+  <div class="topbar">
+    <div class="logo"><span class="logo-dot"></span> SkillPath AI</div>
+    <div class="topbar-right">
+      <i class="ti ti-bell" style="font-size:16px;color:var(--color-text-secondary)" aria-hidden="true"></i>
+      <i class="ti ti-search" style="font-size:16px;color:var(--color-text-secondary)" aria-hidden="true"></i>
+      <div class="avatar">AK</div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" id="nav-dashboard" onclick="showScreen('dashboard')"><i class="ti ti-home" aria-hidden="true"></i> Dashboard</div>
+      <div class="nav-item" id="nav-path" onclick="showScreen('path')"><i class="ti ti-route" aria-hidden="true"></i> My learning path</div>
+      <div class="nav-item" id="nav-resume" onclick="showScreen('resume')"><i class="ti ti-file-cv" aria-hidden="true"></i> Resume & skills</div>
+      <div class="nav-item" id="nav-interview" onclick="showScreen('interview')"><i class="ti ti-messages" aria-hidden="true"></i> Interview prep</div>
+      <div class="nav-item" id="nav-jobs" onclick="showScreen('jobs')"><i class="ti ti-briefcase" aria-hidden="true"></i> Job matches</div>
+      <div class="nav-item" id="nav-certs" onclick="showScreen('certs')"><i class="ti ti-certificate" aria-hidden="true"></i> Certifications</div>
+      <div class="nav-section">AI Tools</div>
+      <div class="nav-item" id="nav-chat" onclick="showScreen('chat')"><i class="ti ti-robot" aria-hidden="true"></i> AI career coach</div>
+      <div class="nav-section">Account</div>
+      <div class="nav-item"><i class="ti ti-settings" aria-hidden="true"></i> Settings</div>
+    </div>
+
+    <div class="content">
+
+      <div class="screen active" id="screen-dashboard">
+        <div class="page-title">Good morning, Amit</div>
+        <div class="page-sub">Your goal: Java Developer → Liferay Architect · 68% complete</div>
+        <div class="ai-banner">
+          <div>
+            <div class="ai-banner-text"><i class="ti ti-sparkles" style="font-size:12px" aria-hidden="true"></i> AI insight — 3 new courses match your skill gap</div>
+            <div class="ai-banner-sub">Complete "Liferay DXP Architecture" to unlock next milestone</div>
+          </div>
+          <button class="btn-sm" onclick="showScreen('path')">View path</button>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-val">68%</div><div class="stat-lbl">Goal progress</div><div class="stat-change">+4% this week</div></div>
+          <div class="stat-card"><div class="stat-val">12</div><div class="stat-lbl">Courses done</div><div class="stat-change">+2 this month</div></div>
+          <div class="stat-card"><div class="stat-val">3</div><div class="stat-lbl">Certifications</div></div>
+          <div class="stat-card"><div class="stat-val">87%</div><div class="stat-lbl">Interview score</div><div class="stat-change">+12% improved</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Skill progress <span class="badge-sm b-teal">Updated</span></div>
+            <div class="progress-row"><div class="progress-label"><span>Liferay DXP</span><span>72%</span></div><div class="progress-bar"><div class="progress-fill" style="width:72%;background:#1D9E75"></div></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Java / OSGi</span><span>85%</span></div><div class="progress-bar"><div class="progress-fill" style="width:85%;background:#1D9E75"></div></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Client Extensions</span><span>40%</span></div><div class="progress-bar"><div class="progress-fill" style="width:40%;background:#EF9F27"></div></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Headless APIs</span><span>55%</span></div><div class="progress-bar"><div class="progress-fill" style="width:55%;background:#EF9F27"></div></div></div>
+            <div class="progress-row"><div class="progress-label"><span>MCP / AI Hub</span><span>20%</span></div><div class="progress-bar"><div class="progress-fill" style="width:20%;background:#E24B4A"></div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Recent activity</div>
+            <div class="activity-item"><div class="activity-dot" style="background:#1D9E75"></div><div><div class="activity-text">Completed "Liferay Objects Deep Dive"</div><div class="activity-time">2 hours ago</div></div></div>
+            <div class="activity-item"><div class="activity-dot" style="background:#534AB7"></div><div><div class="activity-text">Interview session scored 87% — React</div><div class="activity-time">Yesterday</div></div></div>
+            <div class="activity-item"><div class="activity-dot" style="background:#EF9F27"></div><div><div class="activity-text">Resume analyzed — 5 skill gaps found</div><div class="activity-time">2 days ago</div></div></div>
+            <div class="activity-item"><div class="activity-dot" style="background:#1D9E75"></div><div><div class="activity-text">Cert "Oracle Java SE 11" added</div><div class="activity-time">Last week</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-path">
+        <div class="page-title">My learning path</div>
+        <div class="page-sub">Java Developer → Liferay Architect · AI-generated · last updated 2 days ago</div>
+        <div class="ai-banner">
+          <div>
+            <div class="ai-banner-text"><i class="ti ti-sparkles" style="font-size:12px" aria-hidden="true"></i> AI suggests: focus on Client Extensions this week</div>
+            <div class="ai-banner-sub">3 hrs of study will move you to the next milestone</div>
+          </div>
+          <button class="btn-sm">Regenerate path</button>
+        </div>
+        <div class="two-col">
+          <div>
+            <div class="roadmap-step"><div class="step-circle step-done"><i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i></div><div class="step-content"><div class="step-title">Java & OSGi fundamentals</div><div class="step-sub">Completed · 4 courses</div></div></div>
+            <div class="step-line"></div>
+            <div class="roadmap-step"><div class="step-circle step-done"><i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i></div><div class="step-content"><div class="step-title">Liferay DXP basics</div><div class="step-sub">Completed · 6 courses</div></div></div>
+            <div class="step-line"></div>
+            <div class="roadmap-step"><div class="step-circle step-active">3</div><div class="step-content"><div class="step-title">Client Extensions & Headless</div><div class="step-sub">In progress · 2 of 5 courses done</div></div></div>
+            <div class="step-line"></div>
+            <div class="roadmap-step"><div class="step-circle step-todo">4</div><div class="step-content"><div class="step-title">AI Hub & MCP integration</div><div class="step-sub">Upcoming · 4 courses</div></div></div>
+            <div class="step-line"></div>
+            <div class="roadmap-step"><div class="step-circle step-todo">5</div><div class="step-content"><div class="step-title">Architecture patterns & DXP</div><div class="step-sub">Upcoming · 3 courses</div></div></div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:10px">
+              <div class="card-title">Current step — courses</div>
+              <div class="course-card"><div class="course-left"><div class="course-icon" style="background:#EEEDFE"><i class="ti ti-puzzle" style="font-size:14px;color:#534AB7" aria-hidden="true"></i></div><div><div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Custom Element CX</div><div style="font-size:11px;color:var(--color-text-secondary)">2.5 hrs · Intermediate</div></div></div><span class="badge-sm b-teal">Active</span></div>
+              <div class="course-card"><div class="course-left"><div class="course-icon" style="background:#E6F1FB"><i class="ti ti-api" style="font-size:14px;color:#185FA5" aria-hidden="true"></i></div><div><div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">Headless REST & GraphQL</div><div style="font-size:11px;color:var(--color-text-secondary)">3 hrs · Intermediate</div></div></div><span class="badge-sm b-amber">Next</span></div>
+              <div class="course-card"><div class="course-left"><div class="course-icon" style="background:#FAEEDA"><i class="ti ti-code" style="font-size:14px;color:#854F0B" aria-hidden="true"></i></div><div><div style="font-size:12px;font-weight:500;color:var(--color-text-primary)">IFrame Client Extension</div><div style="font-size:11px;color:var(--color-text-secondary)">1.5 hrs · Beginner</div></div></div><span class="badge-sm b-purple">Locked</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-resume">
+        <div class="page-title">Resume & skill analysis</div>
+        <div class="page-sub">Upload your resume — AI extracts skills and shows your gap to target role</div>
+        <div class="resume-zone">
+          <i class="ti ti-upload" style="font-size:22px;color:var(--color-text-tertiary);display:block;margin-bottom:6px" aria-hidden="true"></i>
+          <div style="font-size:13px;font-weight:500;color:var(--color-text-secondary)">Drop your resume here</div>
+          <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:3px">PDF or DOCX · AI will analyze instantly</div>
+          <button class="btn-sm" style="margin-top:8px">Browse file</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Skill gap — Java Dev → Liferay Architect <span class="badge-sm b-coral">5 gaps found</span></div>
+          <div class="gap-row"><div class="gap-skill">Liferay Client Extensions</div><div class="gap-level"><div class="dot partial"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+          <div class="gap-row"><div class="gap-skill">MCP Server integration</div><div class="gap-level"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+          <div class="gap-row"><div class="gap-skill">AI Hub & LLM agents</div><div class="gap-level"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>
+          <div class="gap-row"><div class="gap-skill">Headless API design</div><div class="gap-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot partial"></div><div class="dot"></div><div class="dot"></div></div></div>
+          <div class="gap-row"><div class="gap-skill">Liferay Objects modeling</div><div class="gap-level"><div class="dot filled"></div><div class="dot filled"></div><div class="dot filled"></div><div class="dot"></div><div class="dot"></div></div></div>
+          <div style="font-size:11px;color:var(--color-text-tertiary);margin-top:8px"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#1D9E75;margin-right:4px"></span>Filled = current skill &nbsp; <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#EF9F27;margin-right:4px"></span>Partial &nbsp; Empty = gap</div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-interview">
+        <div class="page-title">Interview prep</div>
+        <div class="page-sub">AI-generated questions for Liferay Architect role · Session #4</div>
+        <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+          <span class="badge-sm b-teal">Liferay DXP</span>
+          <span class="badge-sm b-purple">Client Extensions</span>
+          <span class="badge-sm b-blue">Architecture</span>
+          <span class="badge-sm b-amber">System design</span>
+          <button class="btn-sm" style="margin-left:auto">Generate new set</button>
+        </div>
+        <div class="interview-q">
+          <div class="q-num">Question 1 of 5</div>
+          <div class="q-text">Explain the difference between a traditional OSGi module and a Client Extension in Liferay DXP. When would you choose one over the other?</div>
+          <div class="q-tags"><span class="skill-tag">Client Extensions</span><span class="skill-tag">OSGi</span><span class="skill-tag">Architecture decision</span></div>
+        </div>
+        <div style="margin-bottom:8px">
+          <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:5px">Your answer</div>
+          <textarea rows="4" placeholder="Type your answer here — AI will evaluate it for completeness, accuracy, and depth..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-primary">Submit for AI review</button>
+          <button class="btn-sm">Skip question</button>
+          <button class="btn-sm" style="margin-left:auto">View model answer</button>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-jobs">
+        <div class="page-title">Job matches</div>
+        <div class="page-sub">AI matched 14 roles based on your current skills and learning path</div>
+        <div class="job-card">
+          <div class="job-top"><div><div class="job-title">Liferay DXP Architect</div><div class="job-company">Infosys · Bangalore · ₹28–38 LPA</div></div><span class="badge-sm b-teal">94% match</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px"><span class="skill-tag">Liferay DXP</span><span class="skill-tag">Client Extensions</span><span class="skill-tag">Java</span><span class="skill-tag">OSGi</span></div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">Missing: MCP integration, AI Hub</div>
+          <div class="match-bar"><div class="match-fill" style="width:94%"></div></div>
+        </div>
+        <div class="job-card">
+          <div class="job-top"><div><div class="job-title">Senior Liferay Developer</div><div class="job-company">Wipro · Remote · ₹18–26 LPA</div></div><span class="badge-sm b-blue">88% match</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px"><span class="skill-tag">Liferay</span><span class="skill-tag">React</span><span class="skill-tag">Headless APIs</span></div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">Missing: Commerce, Analytics Cloud</div>
+          <div class="match-bar"><div class="match-fill" style="width:88%"></div></div>
+        </div>
+        <div class="job-card">
+          <div class="job-top"><div><div class="job-title">DXP Solutions Consultant</div><div class="job-company">TCS · Noida · ₹22–30 LPA</div></div><span class="badge-sm b-amber">76% match</span></div>
+          <div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:5px"><span class="skill-tag">Liferay</span><span class="skill-tag">Architecture</span><span class="skill-tag">Client mgmt</span></div>
+          <div style="font-size:11px;color:var(--color-text-secondary)">Missing: AI Hub, MCP, Workflow advanced</div>
+          <div class="match-bar"><div class="match-fill" style="width:76%;background:#EF9F27"></div></div>
+        </div>
+      </div>
+
+      <div class="screen" id="screen-certs">
+        <div class="page-title">Certifications</div>
+        <div class="page-sub">Track earned certs and AI-recommended next steps</div>
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px">Earned</div>
+        <div class="cert-card"><div class="cert-icon" style="background:#E6F1FB"><i class="ti ti-certificate" style="font-size:16px;color:#185FA5" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Oracle Java SE 11 Developer</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:1px">Earned Jan 2024 · Expires Jan 2027</div></div><span class="badge-sm b-green">Valid</span></div>
+        <div class="cert-card"><div class="cert-icon" style="background:#EEEDFE"><i class="ti ti-certificate" style="font-size:16px;color:#534AB7" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Liferay DXP Business Analyst</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:1px">Earned Mar 2024 · No expiry</div></div><span class="badge-sm b-green">Valid</span></div>
+        <div style="font-size:12px;font-weight:500;color:var(--color-text-secondary);margin:10px 0 6px">AI recommended next</div>
+        <div class="cert-card"><div class="cert-icon" style="background:#FAEEDA"><i class="ti ti-award" style="font-size:16px;color:#854F0B" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Liferay DXP Developer Certified</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:1px">Recommended · Est. 6 weeks prep</div></div><button class="btn-sm">Start prep</button></div>
+        <div class="cert-card"><div class="cert-icon" style="background:#E1F5EE"><i class="ti ti-award" style="font-size:16px;color:#0F6E56" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--color-text-primary)">AWS Solutions Architect Associate</div><div style="font-size:11px;color:var(--color-text-secondary);margin-top:1px">Boosts Architect roles by 34%</div></div><button class="btn-sm">View details</button></div>
+      </div>
+
+      <div class="screen" id="screen-chat">
+        <div class="page-title">AI career coach</div>
+        <div class="page-sub">Powered by Liferay MCP + AI Hub · Knows your profile, skills, and goals</div>
+        <div class="chat-messages">
+          <div style="align-self:flex-start"><div class="msg-label">SkillPath AI</div><div class="msg msg-ai">Hello Amit! Based on your current progress, you're 68% of the way to Liferay Architect. Your strongest area is Java & OSGi. Your biggest gap right now is MCP Server integration and AI Hub. Want me to generate a focused 2-week sprint plan?</div></div>
+          <div style="align-self:flex-end"><div class="msg-label" style="text-align:right">You</div><div class="msg msg-user">Yes, please create a 2-week plan for MCP and AI Hub</div></div>
+          <div style="align-self:flex-start"><div class="msg-label">SkillPath AI</div><div class="msg msg-ai">Here's your 2-week sprint:<br><br><strong>Week 1:</strong> MCP Server basics → Enable feature flag → Connect Cursor to Liferay → Build first MCP client<br><br><strong>Week 2:</strong> AI Hub setup → Create first AI agent → Wire agent to Liferay Objects → Build a learning path generator<br><br>Estimated: 1.5 hrs/day. Ready to start?</div></div>
+        </div>
+        <div class="chat-input-row">
+          <input type="text" placeholder="Ask your AI coach anything about your career...">
+          <button class="btn-primary"><i class="ti ti-send" style="font-size:13px" aria-hidden="true"></i></button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+  <button class="btn-sm" onclick="sendPrompt('Now lets start Phase 1 — explain how to build the Liferay Objects data model for SkillPath AI with UserProfile, LearningPath, Course, SkillGap, Certification, InterviewSession, and JobMatch objects ↗')">Start building Phase 1 ↗</button>
+  <button class="btn-sm" onclick="sendPrompt('Show me the wireframe for the onboarding screen where a new user enters their role and goal for the first time ↗')">Show onboarding screen ↗</button>
+</div>
+
+<script>
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+}
+</script>

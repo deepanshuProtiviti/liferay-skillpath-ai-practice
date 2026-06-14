@@ -1,0 +1,188 @@
+{
+    "configuration": {
+        "className": "com.liferay.object.admin.rest.dto.v1_0.ObjectDefinition",
+        "parameters": {
+            "createStrategy": "UPSERT",
+            "updateStrategy": "UPDATE"
+        }
+    },
+    "items": [
+        {
+            "active": true,
+            "externalReferenceCode": "SP_USER_PROFILE",
+            "label": {
+                "en_US": "SP User Profile"
+            },
+            "name": "SPUserProfile",
+            "panelCategoryKey": "control_panel.object",
+            "scope": "company",
+            "objectFields": [
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_USER_PROFILE_CURRENT_ROLE",
+                    "label": {
+                        "en_US": "Current Role"
+                    },
+                    "name": "currentRole"
+                },
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_USER_PROFILE_TARGET_ROLE",
+                    "label": {
+                        "en_US": "Target Role"
+                    },
+                    "name": "targetRole"
+                },
+                {
+                    "businessType": "Integer",
+                    "DBType": "Integer",
+                    "externalReferenceCode": "SP_USER_PROFILE_GOAL_PROGRESS",
+                    "label": {
+                        "en_US": "Goal Progress"
+                    },
+                    "name": "goalProgress"
+                }
+            ],
+            "pluralLabel": {
+                "en_US": "SP User Profiles"
+            }
+        },
+        {
+            "active": true,
+            "externalReferenceCode": "SP_LEARNING_PATH_STEP",
+            "label": {
+                "en_US": "SP Learning Path Step"
+            },
+            "name": "SPLearningPathStep",
+            "panelCategoryKey": "control_panel.object",
+            "scope": "company",
+            "objectFields": [
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_LEARNING_PATH_STEP_TITLE",
+                    "label": {
+                        "en_US": "Title"
+                    },
+                    "name": "title"
+                },
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_LEARNING_PATH_STEP_SUBTITLE",
+                    "label": {
+                        "en_US": "Subtitle"
+                    },
+                    "name": "subtitle"
+                },
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_LEARNING_PATH_STEP_STATUS",
+                    "label": {
+                        "en_US": "Status"
+                    },
+                    "name": "stepStatus"
+                },
+                {
+                    "businessType": "Integer",
+                    "DBType": "Integer",
+                    "externalReferenceCode": "SP_LEARNING_PATH_STEP_PRIORITY",
+                    "label": {
+                        "en_US": "Priority"
+                    },
+                    "name": "priority"
+                }
+            ],
+            "pluralLabel": {
+                "en_US": "SP Learning Path Steps"
+            }
+        },
+        {
+            "active": true,
+            "externalReferenceCode": "SP_SKILL",
+            "label": {
+                "en_US": "SP Skill"
+            },
+            "name": "SPSkill",
+            "panelCategoryKey": "control_panel.object",
+            "scope": "company",
+            "objectFields": [
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_SKILL_NAME",
+                    "label": {
+                        "en_US": "Skill Name"
+                    },
+                    "name": "skillName"
+                },
+                {
+                    "businessType": "Integer",
+                    "DBType": "Integer",
+                    "externalReferenceCode": "SP_SKILL_CURRENT_LEVEL",
+                    "label": {
+                        "en_US": "Current Level"
+                    },
+                    "name": "currentLevel"
+                },
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_SKILL_STATUS",
+                    "label": {
+                        "en_US": "Status"
+                    },
+                    "name": "skillStatus"
+                }
+            ],
+            "pluralLabel": {
+                "en_US": "SP Skills"
+            }
+        },
+        {
+            "active": true,
+            "externalReferenceCode": "SP_MOCK_TEST",
+            "label": {
+                "en_US": "SP Mock Test"
+            },
+            "name": "SPMockTest",
+            "panelCategoryKey": "control_panel.object",
+            "scope": "company",
+            "objectFields": [
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_MOCK_TEST_NAME",
+                    "label": {
+                        "en_US": "Test Name"
+                    },
+                    "name": "testName"
+                },
+                {
+                    "businessType": "Integer",
+                    "DBType": "Integer",
+                    "externalReferenceCode": "SP_MOCK_TEST_SCORE",
+                    "label": {
+                        "en_US": "Score"
+                    },
+                    "name": "score"
+                },
+                {
+                    "businessType": "Text",
+                    "DBType": "String",
+                    "externalReferenceCode": "SP_MOCK_TEST_TOPIC",
+                    "label": {
+                        "en_US": "Topic"
+                    },
+                    "name": "topic"
+                }
+            ],
+            "pluralLabel": {
+                "en_US": "SP Mock Tests"
+            }
+        }
+    ]
+}

@@ -1,0 +1,15 @@
+assemble:
+    - from: batch
+      into: batch
+
+skillpath-ai-objects:
+    oAuthApplicationHeadlessServer: skillpath-ai-oauth-application
+    type: batch
+    name: SkillPath AI Objects
+
+skillpath-ai-oauth-application:
+    type: oAuthApplicationHeadlessServer
+    name: SkillPath AI OAuth Application
+    homePageURL: http://localhost:8080
+    scopes:
+        - Liferay.Object.Admin.REST.everything
