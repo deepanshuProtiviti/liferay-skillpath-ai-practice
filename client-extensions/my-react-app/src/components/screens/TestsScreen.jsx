@@ -5,12 +5,18 @@ import Icon from '../common/Icon';
 import Badge from '../common/Badge';
 
 const TestsScreen = () => {
-  const { skillProgress, updateSkill } = useSkillPath();
+  const { skillProgress, recordTestResult, testHistory } = useSkillPath();
 
   const handleTakeTest = (skill) => {
     const score = Math.floor(Math.random() * 40) + 60; // Mock score between 60-100
-    alert(`Mock Test for ${skill.label} completed! You scored ${score}%. Your profile has been updated.`);
-    updateSkill(skill.label, score);
+    alert(`Mock Test for ${skill.label} completed! You scored ${score}%. Your profile and skill level have been updated.`);
+    recordTestResult(`${skill.label} Assessment`, score, skill.label);
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Just now';
+    const date = new Date(dateString);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
@@ -47,20 +53,26 @@ const TestsScreen = () => {
         </Card>
 
         <Card title="Test Performance History">
-          <div className="activity-item">
-            <div className="activity-dot dot-green" />
-            <div>
-              <div className="activity-text">Liferay DXP Fundamentals</div>
-              <div className="activity-time">Score: 85% · Passed</div>
+          {testHistory.length > 0 ? (
+            testHistory.map((test, i) => (
+              <div className="activity-item" key={test.id || i}>
+                <div className={`activity-dot ${test.score >= 80 ? 'dot-green' : 'dot-purple'}`} />
+                <div>
+                  <div className="activity-text">{test.testName}</div>
+                  <div className="activity-time">
+                    Score: {test.score}% · {test.score >= 70 ? 'Passed' : 'Review Needed'}
+                    <br />
+                    <small>{formatDate(test.dateCreated)}</small>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="empty-state" style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+              <Icon name="clipboard-list" />
+              <p>No tests taken yet. Start your first assessment!</p>
             </div>
-          </div>
-          <div className="activity-item">
-            <div className="activity-dot dot-purple" />
-            <div>
-              <div className="activity-text">Java OSGi Deep Dive</div>
-              <div className="activity-time">Score: 92% · Excellent</div>
-            </div>
-          </div>
+          )}
         </Card>
       </div>
     </section>
@@ -68,3 +80,4 @@ const TestsScreen = () => {
 };
 
 export default TestsScreen;
+

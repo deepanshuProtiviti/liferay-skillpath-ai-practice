@@ -9,18 +9,18 @@
     "items": [
         {
             "active": true,
-            "externalReferenceCode": "SP_LEARNING_TOPIC",
+            "externalReferenceCode": "SP_LEARNING_MATERIAL",
             "label": {
-                "en_US": "SP Learning Topic"
+                "en_US": "SP Learning Material"
             },
-            "name": "SPLearningTopic",
+            "name": "SPLearningMaterial",
             "panelCategoryKey": "control_panel.object",
             "scope": "company",
             "objectFields": [
                 {
                     "businessType": "Text",
                     "DBType": "String",
-                    "externalReferenceCode": "SP_LEARNING_TOPIC_TITLE",
+                    "externalReferenceCode": "SP_LEARNING_MATERIAL_TITLE",
                     "label": {
                         "en_US": "Title"
                     },
@@ -29,7 +29,7 @@
                 {
                     "businessType": "Text",
                     "DBType": "String",
-                    "externalReferenceCode": "SP_LEARNING_TOPIC_DESCRIPTION",
+                    "externalReferenceCode": "SP_LEARNING_MATERIAL_DESCRIPTION",
                     "label": {
                         "en_US": "Description"
                     },
@@ -38,7 +38,7 @@
                 {
                     "businessType": "Text",
                     "DBType": "String",
-                    "externalReferenceCode": "SP_LEARNING_TOPIC_STEP_ID",
+                    "externalReferenceCode": "SP_LEARNING_MATERIAL_STEP_ID",
                     "label": {
                         "en_US": "Step ID"
                     },
@@ -47,15 +47,15 @@
                 {
                     "businessType": "Integer",
                     "DBType": "Integer",
-                    "externalReferenceCode": "SP_LEARNING_TOPIC_ORDER",
+                    "externalReferenceCode": "SP_LEARNING_MATERIAL_ORDER",
                     "label": {
                         "en_US": "Order"
                     },
-                    "name": "order"
+                    "name": "topicOrder"
                 }
             ],
             "pluralLabel": {
-                "en_US": "SP Learning Topics"
+                "en_US": "SP Learning Materials"
             }
         }
     ]

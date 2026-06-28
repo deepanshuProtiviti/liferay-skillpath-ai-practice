@@ -5,7 +5,7 @@ import Card from '../common/Card'
 import Icon from '../common/Icon'
 import PageHeader from '../common/PageHeader'
 
-const Roadmap = ({ steps }) => (
+const Roadmap = ({ steps, onStartLearning }) => (
   <div className="roadmap">
     {steps.map((step, index) => (
       <div className="roadmap-item" key={step.title}>
@@ -14,8 +14,19 @@ const Roadmap = ({ steps }) => (
             {step.status === 'done' ? <Icon name="check" /> : index + 1}
           </div>
           <div className="step-content">
-            <div className="step-title">{step.title}</div>
-            <div className="step-sub">{step.subtitle}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+              <div>
+                <div className="step-title">{step.title}</div>
+                <div className="step-sub">{step.subtitle}</div>
+              </div>
+              <button 
+                className="btn-sm" 
+                onClick={() => onStartLearning(step)}
+                style={{ marginLeft: '1rem' }}
+              >
+                Start Learning
+              </button>
+            </div>
           </div>
         </div>
         {index < steps.length - 1 ? <div className="step-line" /> : null}
@@ -39,7 +50,7 @@ const CourseCard = ({course}) => (
   </div>
 )
 
-const LearningPathScreen = () => {
+const LearningPathScreen = ({ onStartLearning }) => {
   const { userProfile, roadmapSteps, currentCourses } = useSkillPath();
 
   return (
@@ -54,7 +65,7 @@ const LearningPathScreen = () => {
         title="AI suggests: focus on your current goal this week"
       />
       <div className="two-col">
-        <Roadmap steps={roadmapSteps} />
+        <Roadmap steps={roadmapSteps} onStartLearning={onStartLearning} />
         <Card title="Current step - courses">
           {currentCourses.map((course) => (
             <CourseCard course={course} key={course.title} />

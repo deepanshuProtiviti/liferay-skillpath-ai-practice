@@ -2,10 +2,10 @@ assemble:
     - from: batch
       into: batch
 
-skillpath-ai-objects:
+skillpath-ai-objects-v2:
     oAuthApplicationHeadlessServer: skillpath-ai-oauth-application
     type: batch
-    name: SkillPath AI Objects
+    name: SkillPath AI Objects V2
 
 skillpath-ai-oauth-application:
     type: oAuthApplicationHeadlessServer

@@ -8,6 +8,7 @@ import {
 import { UserProfileService } from '../services/userProfileService';
 import { LearningPathService } from '../services/learningPathService';
 import { SkillGapService } from '../services/skillGapService';
+import { MockTestService } from '../services/mockTestService';
 
 const SkillPathContext = createContext();
 
@@ -16,6 +17,7 @@ export const SkillPathProvider = ({ children }) => {
   const [roadmapSteps, setRoadmapSteps] = useState(initialSteps);
   const [currentCourses, setCurrentCourses] = useState(initialCourses);
   const [skillProgress, setSkillProgress] = useState(initialSkills);
+  const [testHistory, setTestHistory] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [useLiferay, setUseLiferay] = useState(false);
 
@@ -32,15 +34,34 @@ export const SkillPathProvider = ({ children }) => {
             });
             setUseLiferay(true);
             
-            // Load other data
+            // Load Steps with mapping: stepStatus -> status
             const steps = await LearningPathService.getMySteps();
-            if (steps.items.length > 0) setRoadmapSteps(steps.items);
+            if (steps.items.length > 0) {
+              setRoadmapSteps(steps.items.map(item => ({
+                ...item,
+                status: item.stepStatus
+              })));
+            }
             
+            // Load Skills with mapping: skillName -> label, currentLevel -> value, skillStatus -> status
             const skills = await SkillGapService.getMySkills();
-            if (skills.items.length > 0) setSkillProgress(skills.items);
+            if (skills.items.length > 0) {
+              setSkillProgress(skills.items.map(item => ({
+                ...item,
+                label: item.skillName,
+                value: item.currentLevel,
+                status: item.skillStatus
+              })));
+            }
+
+            // Load Test History
+            const tests = await MockTestService.getTestHistory();
+            if (tests.items.length > 0) {
+              setTestHistory(tests.items);
+            }
           }
         } catch (e) {
-          console.log('Liferay Objects not found, falling back to static/mock data', e);
+          console.log('Liferay Objects not found or error loading, falling back to static/mock data', e);
         }
       }
     };
@@ -51,30 +72,41 @@ export const SkillPathProvider = ({ children }) => {
     setIsGenerating(true);
     
     if (useLiferay) {
-      // 1. Update Profile in Liferay
-      await UserProfileService.updateProfile(userProfile.id, {
-        currentRole: background,
-        targetRole: goal,
-        goalProgress: 0
-      });
+      try {
+        // 1. Update Profile in Liferay
+        await UserProfileService.updateProfile(userProfile.id, {
+          currentRole: background,
+          targetRole: goal,
+          goalProgress: 10
+        });
 
-      // 2. Here we would typically call an AI service/MCP
-      // For now, we simulate by creating steps in Liferay
-      const mockSteps = [
-        { title: `Fundamentals of ${goal}`, subtitle: 'Basics', status: 'active', priority: 1 },
-        { title: `Advanced ${goal}`, subtitle: 'Bridge', status: 'todo', priority: 2 }
-      ];
+        // 2. Create new steps in Liferay
+        const mockSteps = [
+          { title: `Fundamentals of ${goal}`, subtitle: `Bridge from ${background}`, stepStatus: 'active', priority: 1 },
+          { title: `${goal} Deep Dive`, subtitle: 'Core concepts', stepStatus: 'todo', priority: 2 },
+          { title: `${goal} Project`, subtitle: 'Practical application', stepStatus: 'todo', priority: 3 },
+          { title: `${goal} Certification`, subtitle: 'Final validation', stepStatus: 'todo', priority: 4 }
+        ];
 
-      for (const step of mockSteps) {
-        await LearningPathService.createStep(step);
+        for (const step of mockSteps) {
+          await LearningPathService.createStep(step);
+        }
+        
+        // Reload and map
+        const freshSteps = await LearningPathService.getMySteps();
+        setRoadmapSteps(freshSteps.items.map(item => ({
+          ...item,
+          status: item.stepStatus
+        })));
+        
+        setUserProfile(prev => ({ ...prev, currentRole: background, targetRole: goal, goalProgress: 10 }));
+      } catch (err) {
+        console.error('Failed to generate roadmap in Liferay', err);
+      } finally {
+        setIsGenerating(false);
       }
-      
-      // Reload from Liferay
-      const freshSteps = await LearningPathService.getMySteps();
-      setRoadmapSteps(freshSteps.items);
-      setIsGenerating(false);
     } else {
-      // Fallback to existing mock logic
+      // Fallback
       setTimeout(() => {
         const newSteps = [
           { title: `Fundamentals of ${goal}`, subtitle: 'Required for your background in ' + background, status: 'active' },
@@ -95,7 +127,12 @@ export const SkillPathProvider = ({ children }) => {
       if (skill && skill.id) {
         await SkillGapService.updateSkillLevel(skill.id, newValue);
         const freshSkills = await SkillGapService.getMySkills();
-        setSkillProgress(freshSkills.items);
+        setSkillProgress(freshSkills.items.map(item => ({
+          ...item,
+          label: item.skillName,
+          value: item.currentLevel,
+          status: item.skillStatus
+        })));
       }
     } else {
       setSkillProgress(prev => prev.map(s => 
@@ -104,14 +141,34 @@ export const SkillPathProvider = ({ children }) => {
     }
   };
 
+  const recordTestResult = async (testName, score, topic) => {
+    if (useLiferay) {
+      try {
+        await MockTestService.recordTestResult({ testName, score, topic });
+        const tests = await MockTestService.getTestHistory();
+        setTestHistory(tests.items);
+        
+        // Also update the skill level automatically based on test score
+        await updateSkill(topic, score);
+      } catch (err) {
+        console.error('Failed to record test result', err);
+      }
+    } else {
+      setTestHistory(prev => [{ testName, score, topic, dateCreated: new Date().toISOString() }, ...prev]);
+      updateSkill(topic, score);
+    }
+  };
+
   const value = {
     userProfile,
     roadmapSteps,
     currentCourses,
     skillProgress,
+    testHistory,
     isGenerating,
     generateRoadmap,
     updateSkill,
+    recordTestResult,
     setSkillProgress,
     setRoadmapSteps
   };
@@ -130,3 +187,4 @@ export const useSkillPath = () => {
   }
   return context;
 };
+
